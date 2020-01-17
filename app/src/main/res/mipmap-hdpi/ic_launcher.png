@@ -1,0 +1,91 @@
+// Copyright (c) 2011, the Dart project authors.  Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed by a
+// BSD-style license that can be found in the LICENSE file.
+
+part of dart.core;
+
+/**
+ * An instant in time, such as July 20, 1969, 8:18pm GMT.
+ *
+ * DateTimes can represent time values that are at a distance of at most
+ * 100,000,000 days from epoch (1970-01-01 UTC): -271821-04-20 to 275760-09-13.
+ *
+ * Create a DateTime object by using one of the constructors
+ * or by parsing a correctly formatted string,
+ * which complies with a subset of ISO 8601.
+ * Note that hours are specified between 0 and 23,
+ * as in a 24-hour clock.
+ * For example:
+ *
+ * ```
+ * var now = new DateTime.now();
+ * var berlinWallFell = new DateTime.utc(1989, 11, 9);
+ * var moonLanding = DateTime.parse("1969-07-20 20:18:04Z");  // 8:18pm
+ * ```
+ *
+ * A DateTime object is anchored either in the UTC time zone
+ * or in the local time zone of the current computer
+ * when the object is created.
+ *
+ * Once created, neither the value nor the time zone
+ * of a DateTime object may be changed.
+ *
+ * You can use properties to get
+ * the individual units of a DateTime object.
+ *
+ * ```
+ * assert(berlinWallFell.month == 11);
+ * assert(moonLanding.hour == 20);
+ * ```
+ *
+ * For convenience and readability,
+ * the DateTime class provides a constant for each day and month
+ * name - for example, [august] and [friday].
+ * You can use these constants to improve code readability:
+ *
+ * ```
+ * var berlinWallFell = new DateTime.utc(1989, DateTime.november, 9);
+ * assert(berlinWallFell.weekday == DateTime.thursday);
+ * ```
+ *
+ * Day and month values begin at 1, and the week starts on Monday.
+ * That is, the constants [january] and [monday] are both 1.
+ *
+ * ## Working with UTC and local time
+ *
+ * A DateTime object is in the local time zone
+ * unless explicitly created in the UTC time zone.
+ *
+ * ```
+ * var dDay = new DateTime.utc(1944, 6, 6);
+ * ```
+ *
+ * Use [isUtc] to determine whether a DateTime object is based in UTC.
+ * Use the methods [toLocal] and [toUtc]
+ * to get the equivalent date/time value specified in the other time zone.
+ * Use [timeZoneName] to get an abbreviated name of the time zone
+ * for the DateTime object.
+ * To find the difference
+ * between UTC and the time zone of a DateTime object
+ * call [timeZoneOffset].
+ *
+ * ## Comparing DateTime objects
+ *
+ * The DateTime class contains several handy methods,
+ * such as [isAfter], [isBefore], and [isAtSameMomentAs],
+ * for comparing DateTime objects.
+ *
+ * ```
+ * assert(berlinWallFell.isAfter(moonLanding) == true);
+ * assert(berlinWallFell.isBefore(moonLanding) == false);
+ * ```
+ *
+ * ## Using DateTime with Duration
+ *
+ * Use the [add] and [subtract] methods with a [Duration] object
+ * to create a new DateTime object based on another.
+ * For example, to find the date that is sixty days (24 * 60 hours) after today,
+ * write:
+ *
+ * ```
+ * var now 

@@ -1,0 +1,60 @@
+// Copyright (c) 2011, the Dart project authors.  Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed by a
+// BSD-style license that can be found in the LICENSE file.
+
+part of dart.core;
+
+/**
+ * A collection of values, or "elements", that can be accessed sequentially.
+ *
+ * The elements of the iterable are accessed by getting an [Iterator]
+ * using the [iterator] getter, and using it to step through the values.
+ * Stepping with the iterator is done by calling [Iterator.moveNext],
+ * and if the call returns `true`,
+ * the iterator has now moved to the next element,
+ * which is then available as [Iterator.current].
+ * If the call returns `false`, there are no more elements,
+ * and `iterator.current` returns `null`.
+ *
+ * You can create more than one iterator from the same `Iterable`.
+ * Each time `iterator` is read, it returns a new iterator,
+ * and different iterators can be stepped through independently,
+ * each giving access to all the elements of the iterable.
+ * The iterators of the same iterable *should* provide the same values
+ * in the same order (unless the underlying collection is modified between
+ * the iterations, which some collections allow).
+ *
+ * You can also iterate over the elements of an `Iterable`
+ * using the for-in loop construct, which uses the `iterator` getter behind the
+ * scenes.
+ * For example, you can iterate over all of the keys of a [Map],
+ * because `Map` keys are iterable.
+ *
+ *     Map kidsBooks = {'Matilda': 'Roald Dahl',
+ *                      'Green Eggs and Ham': 'Dr Seuss',
+ *                      'Where the Wild Things Are': 'Maurice Sendak'};
+ *     for (var book in kidsBooks.keys) {
+ *       print('$book was written by ${kidsBooks[book]}');
+ *     }
+ *
+ * The [List] and [Set] classes are both `Iterable`,
+ * as are most classes in the `dart:collection` library.
+ *
+ * Some [Iterable] collections can be modified.
+ * Adding an element to a `List` or `Set` will change which elements it
+ * contains, and adding a new key to a `Map` changes the elements of [Map.keys].
+ * Iterators created after the change will provide the new elements, and may
+ * or may not preserve the order of existing elements
+ * (for example, a [HashSet] may completely change its order when a single
+ * element is added).
+ *
+ * Changing a collection *while* it is being iterated
+ * is generally *not* allowed.
+ * Doing so will break the iteration, which is typically signalled
+ * by throwing a [ConcurrentModificationError]
+ * the next time [Iterator.moveNext] is called.
+ * The current value of [Iterator.current] getter
+ * should not be affected by the change in the collection,
+ * the `current` value was set by the previous call to [Iterator.moveNext].
+ *
+ * Some iterables compute their 

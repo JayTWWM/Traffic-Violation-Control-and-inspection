@@ -1,0 +1,61 @@
+// Copyright (c) 2012, the Dart project authors.  Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed by a
+// BSD-style license that can be found in the LICENSE file.
+
+part of dart.async;
+
+class _BroadcastStream<T> extends _ControllerStream<T> {
+  _BroadcastStream(_StreamControllerLifecycle<T> controller)
+      : super(controller);
+
+  bool get isBroadcast => true;
+}
+
+class _BroadcastSubscription<T> extends _ControllerSubscription<T> {
+  static const int _STATE_EVENT_ID = 1;
+  static const int _STATE_FIRING = 2;
+  static const int _STATE_REMOVE_AFTER_FIRING = 4;
+  // TODO(lrn): Use the _state field on _ControllerSubscription to
+  // also store this state. Requires that the subscription implementation
+  // does not assume that it's use of the state integer is the only use.
+  int _eventState = 0; // Initialized to help dart2js type inference.
+
+  _BroadcastSubscription<T> _next;
+  _BroadcastSubscription<T> _previous;
+
+  _BroadcastSubscription(_StreamControllerLifecycle<T> controller,
+      void onData(T data), Function onError, void onDone(), bool cancelOnError)
+      : super(controller, onData, onError, onDone, cancelOnError) {
+    _next = _previous = this;
+  }
+
+  bool _expectsEvent(int eventId) => (_eventState & _STATE_EVENT_ID) == eventId;
+
+  void _toggleEventId() {
+    _eventState ^= _STATE_EVENT_ID;
+  }
+
+  bool get _isFiring => (_eventState & _STATE_FIRING) != 0;
+
+  void _setRemoveAfterFiring() {
+    assert(_isFiring);
+    _eventState |= _STATE_REMOVE_AFTER_FIRING;
+  }
+
+  bool get _removeAfterFiring =>
+      (_eventState & _STATE_REMOVE_AFTER_FIRING) != 0;
+
+  // The controller._recordPause doesn't do anything for a broadcast controller,
+  // so we don't bother calling it.
+  void _onPause() {}
+
+  // The controller._recordResume doesn't do anything for a broadcast
+  // controller, so we don't bother calling it.
+  void _onResume() {}
+
+  // _onCancel is inherited.
+}
+
+abstract class _BroadcastStreamController<T>
+    implements _StreamControllerBase<T> {
+  static const int _STATE_I

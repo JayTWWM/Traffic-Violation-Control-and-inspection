@@ -1,0 +1,192 @@
+// Copyright (c) 2015, the Dart project authors.  Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed by a
+// BSD-style license that can be found in the LICENSE file.
+
+part of dart.developer;
+
+const bool _hasTimeline =
+    const bool.fromEnvironment("dart.developer.timeline", defaultValue: true);
+
+/// A typedef for the function argument to [Timeline.timeSync].
+typedef TimelineSyncFunction<T> = T Function();
+
+// TODO: This typedef is not used.
+typedef Future TimelineAsyncFunction();
+
+/// A class to represent Flow events.
+///
+/// [Flow] objects are used to thread flow events between timeline slices,
+/// for example, those created with the [Timeline] class below. Adding
+/// [Flow] objects cause arrows to be drawn between slices in Chrome's trace
+/// viewer. The arrows start at e.g [Timeline] events that are passed a
+/// [Flow.begin] object, go through [Timeline] events that are passed a
+/// [Flow.step] object, and end at [Timeline] events that are passed a
+/// [Flow.end] object, all having the same [Flow.id]. For example:
+///
+/// ```dart
+/// var flow = Flow.begin();
+/// Timeline.timeSync('flow_test', () {
+///   doSomething();
+/// }, flow: flow);
+///
+/// Timeline.timeSync('flow_test', () {
+///   doSomething();
+/// }, flow: Flow.step(flow.id));
+///
+/// Timeline.timeSync('flow_test', () {
+///   doSomething();
+/// }, flow: Flow.end(flow.id));
+/// ```
+class Flow {
+  // These values must be kept in sync with the enum "EventType" in
+  // runtime/vm/timeline.h.
+  static const int _begin = 9;
+  static const int _step = 10;
+  static const int _end = 11;
+
+  final int _type;
+
+  /// The flow id of the flow event.
+  final int id;
+
+  Flow._(this._type, this.id);
+
+  /// A "begin" Flow event.
+  ///
+  /// When passed to a [Timeline] method, generates a "begin" Flow event.
+  /// If [id] is not provided, an id that conflicts with no other Dart-generated
+  /// flow id's will be generated.
+  static Flow begin({int id}) {
+    return new Flow._(_begin, id ?? _getNextAsyncId());
+  }
+
+  /// A "step" Flow event.
+  ///
+  /// When passed to a [Timeline] method, generates a "step" Flow event.
+  /// The [id] argument is required. It can come either from another [Flow]
+  /// event, or some id that comes from the environment.
+  static Flow step(int id) => new Flow._(_step, id);
+
+  /// An "end" Flow event.
+  ///
+  /// When passed to a [Timeline] method, generates a "end" Flow event.
+  /// The [id] argument is required. It can come either from another [Flow]
+  /// event, or some id that comes from the environment.
+  static Flow end(int id) => new Flow._(_end, id);
+}
+
+/// Add to the timeline.
+///
+/// [Timeline]'s methods add synchronous events to the timeline. When
+/// generating a timeline in Chrome's tracing format, using [Timeline] generates
+/// "Complete" events. [Timeline]'s [startSync] and [finishSync] can be used
+/// explicitly, or implicitly by wrapping a closure in [timeSync]. For example:
+///
+/// ```dart
+/// Timeline.startSync("Doing Something");
+/// doSomething();
+/// Timeline.finishSync();
+/// ```
+///
+/// Or:
+///
+/// ```dart
+/// Timeline.timeSync("Doing Something", () {
+///   doSomething();
+/// });
+/// ```
+class Timeline {
+  /// Start a synchronous operation labeled [name]. Optionally takes
+  /// a [Map] of [arguments]. This slice may also optionally be associated with
+  /// a [Flow] event. This operation must be finished before
+  /// returning to the event queue.
+  static void startSync(String name, {Map arguments, Flow flow}) {
+    if (!_hasTimeline) return;
+    ArgumentError.checkNotNull(name, 'name');
+    if (!_isDartStreamEnabled()) {
+      // Push a null onto the stack and return.
+      _stack.add(null);
+      return;
+    }
+    var block = new _SyncBlock._(name, _getTraceClock(), _getThreadCpuClock());
+    if (arguments != null) {
+      block._arguments = arguments;
+    }
+    if (flow != null) {
+      block.flow = flow;
+    }
+    _stack.add(block);
+  }
+
+  /// Finish the last synchronous operation that was started.
+  static void finishSync() {
+    if (!_hasTimeline) {
+      return;
+    }
+    if (_stack.length == 0) {
+      throw new StateError('Uneven calls to startSync and finishSync');
+    }
+    // Pop top item off of stack.
+    var block = _stack.removeLast();
+    if (block == null) {
+      // Dart stream was disabled when startSync was called.
+      return;
+    }
+    // Finish it.
+    block.finish();
+  }
+
+  /// Emit an instant event.
+  static void instantSync(String name, {Map arguments}) {
+    if (!_hasTimeline) return;
+    ArgumentError.checkNotNull(name, 'name');
+    if (!_isDartStreamEnabled()) {
+      // Stream is disabled.
+      return;
+    }
+    Map instantArguments;
+    if (arguments != null) {
+      instantArguments = new Map.from(arguments);
+    }
+    _reportInstantEvent(
+        _getTraceClock(), 'Dart', name, _argumentsAsJson(instantArguments));
+  }
+
+  /// A utility method to time a synchronous [function]. Internally calls
+  /// [function] bracketed by calls to [startSync] and [finishSync].
+  static T timeSync<T>(String name, TimelineSyncFunction<T> function,
+      {Map arguments, Flow flow}) {
+    startSync(name, arguments: arguments, flow: flow);
+    try {
+      return function();
+    } finally {
+      finishSync();
+    }
+  }
+
+  /// The current time stamp from the clock used by the timeline. Units are
+  /// microseconds.
+  ///
+  /// When run on the Dart VM, uses the same monotonic clock as the embedding
+  /// API's `Dart_TimelineGetMicros`.
+  static int get now => _getTraceClock();
+  static final List<_SyncBlock> _stack = new List<_SyncBlock>();
+}
+
+/// An asynchronous task on the timeline. An asynchronous task can have many
+/// (nested) synchronous operations. Synchronous operations can live longer than
+/// the current isolate event. To pass a [TimelineTask] to another isolate,
+/// you must first call [pass] to get the task id and then construct a new
+/// [TimelineTask] in the other isolate.
+class TimelineTask {
+  /// Create a task. The task ID will be set by the system.
+  TimelineTask() : _taskId = _getNextAsyncId() {}
+
+  /// Create a task with an explicit [taskId]. This is useful if you are
+  /// passing a task from one isolate to another.
+  TimelineTask.withTaskId(int taskId) : _taskId = taskId {
+    ArgumentError.checkNotNull(taskId, 'taskId');
+  }
+
+  /// Start a synchronous operation within this task named [name].
+  /

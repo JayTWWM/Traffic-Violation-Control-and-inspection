@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/login_back_img"
+    tools:context=".EventInfo">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/parent1Info">
+
+                <ImageView
+                    android:id="@+id/ProfilePicInfo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="48dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/logo" />
+
+                <TextView
+                    android:id="@+id/ProfileNameInfo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/ProfilePicInfo"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="16dp"
+                    android:textColor="#1b1b1b"
+                    android:textSize="40sp"
+                    android:textStyle="bold" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:id="@+id/parent2Info"
+                android:layout_below="@id/parent1Info">
+
+                <RelativeLayout
+                    android:id="@+id/RegisteringInfo"
+                    android:padding="20dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rounder">
+
+                    <TextView
+                        android:id="@+id/RegisInfo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="16dp"
+                        android:textSize="24sp"
+                        android:layout_centerHorizontal="true"
+                        android:textColor="#1b1b1b"
+                        android:textStyle="bold"/>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/TimeInfoInfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/RegisteringInfo"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/rounder"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:id="@+id/TimeInfo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:paddingLeft="16dp"
+                        android:textColor="#1b1b1b"
+                        android:textSize="24sp"
+                        android:textStyle="bold" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:padding="20dp"
+                    android:id="@+id/LocationInfoInfo"
+                    android:layout_marginTop="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/TimeInfoInfo">
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:paddingLeft="16dp"
+                        android:textSize="24sp"
+                        android:text="Get Location"
+                        android:layout_centerHorizontal="true"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/LocationInfo"
+                        android:textColor="#ffff"
+                        android:background="@drawable/button_round_border"
+                        android:padding="15dp"
+                        android:onClick="getLocationed"/>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_below="@id/LocationInfo">
+
+                        <Button
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Approve"
+                            android:id="@+id/approveInfo"
+                            android:textColor="#ffff"
+                            android:background="@drawable/button_round_border"
+                            android:padding="15dp"
+                            android:onClick="approve"/>
+
+                        <Button
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Reject"
+                            android:id="@+id/rejectInfo"
+                            android:textColor="#ffff"
+                            android:background="@drawable/button_round_border"
+                            android:layout_alignParentEnd="true"
+                            android:padding="15dp"
+                            android:onClick="reject"/>
+
+                    </RelativeLayout>
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

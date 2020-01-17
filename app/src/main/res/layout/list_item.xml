@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/myListItem"
+    android:background="@drawable/rounder"
+    android:layout_marginVertical="4dp">
+
+    <ImageView
+        android:layout_marginTop="24dp"
+        android:layout_width="350dp"
+        android:layout_height="350dp"
+        android:src="@drawable/logo"
+        android:padding="8dp"
+        android:layout_centerHorizontal="true"
+        android:scaleType="centerCrop"
+        android:id="@+id/listPic"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Profile Name"
+        android:id="@+id/listName"
+        android:textStyle="bold"
+        android:layout_below="@id/listPic"
+        android:layout_marginTop="16dp"
+        android:layout_centerHorizontal="true"
+        android:textColor="#1b1b1b"
+        android:textSize="28sp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Location"
+        android:layout_below="@id/listName"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:textColor="#1b1b1b"
+        android:textSize="20sp"
+        android:layout_margin="16dp"
+        android:id="@+id/listLocation"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="4dp"/>
+
+</RelativeLayout>

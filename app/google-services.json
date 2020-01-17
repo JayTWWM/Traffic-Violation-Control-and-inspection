@@ -1,0 +1,56 @@
+{
+  "project_info": {
+    "project_number": "289813942436",
+    "firebase_url": "https://traffic-violation-report.firebaseio.com",
+    "project_id": "traffic-violation-report",
+    "storage_bucket": "traffic-violation-report.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:289813942436:android:f3fca7f629192f7d9f5631",
+        "android_client_info": {
+          "package_name": "com.twwm.trafficviolationreport"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "289813942436-6k69m8bd07jjkg43afprb5k1lnrntoh5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.twwm.trafficviolationreport",
+            "certificate_hash": "db1af6b971f8b873fc152717d3949ed7be33136d"
+          }
+        },
+        {
+          "client_id": "289813942436-t72upq7ljt57mhutghsbcp9624llp6g9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.twwm.trafficviolationreport",
+            "certificate_hash": "4df58ced340c6a17c0fa53db48b3e6a511fd0e20"
+          }
+        },
+        {
+          "client_id": "289813942436-6t2l0t2dfaiav3v7h0lfck48h5l16v25.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHY6YIXE-25OO1CQP8b74QnguKfszUlow"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "289813942436-6t2l0t2dfaiav3v7h0lfck48h5l16v25.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

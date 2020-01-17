@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/login_back_img"
+    tools:context=".SignUp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/loginLogo"
+            android:layout_marginTop="50dp"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:src="@drawable/logo"
+            android:layout_centerHorizontal="true"/>
+
+        <EditText
+            android:id="@+id/Email"
+            android:layout_below="@id/loginLogo"
+            android:background="@drawable/rounded_corner"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="24dp"
+            android:hint="  Email"
+            android:paddingLeft="8dp"/>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/PasswordParent"
+            android:layout_below="@id/Email">
+
+            <EditText
+                android:id="@+id/Password"
+                android:background="@drawable/rounded_corner"
+                android:layout_width="185dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="24dp"
+                android:hint="  Password"
+                android:paddingLeft="8dp"
+                android:inputType="textPassword"/>
+
+            <EditText
+                android:id="@+id/ConfirmPassword"
+                android:background="@drawable/rounded_corner"
+                android:layout_width="185dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="24dp"
+                android:hint="  Confirm Password"
+                android:layout_marginLeft="24dp"
+                android:layout_toRightOf="@id/Password"
+                android:paddingLeft="8dp"
+                android:inputType="textPassword"/>
+
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/loginButtonAdmin"
+            android:layout_below="@id/PasswordParent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="24dp"
+            android:text="Sign Up"
+            android:textColor="#ffff"
+            android:background="@drawable/button_round_border"
+            android:layout_marginBottom="24dp"/>
+
+    </RelativeLayout>
+
+</ScrollView>
